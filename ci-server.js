@@ -21,7 +21,12 @@ db_push = function(elm){
 function exec(script, env, cb){
     if (!cb) { cb = env; }
 
-    return child_process.execFile(script, [], {"env": env}, cb);
+    return child_process.exec(
+        script, 
+        [], // args
+        {"env": env, "shell": "/bin/bash"}, //opts
+        cb
+    );
 }
 
 function mkRequest(req_url, method, auth, body, cb){
@@ -55,21 +60,22 @@ function handlePR(body){
 
 function handleTesting(body){
     // Probably do something about the input from github
-    exec("slow_test.sh", {}, function(err, stdout, stderr){
+    exec("./slow_test.sh", {}, function(err, stdout, stderr){
         console.log("Finished running slow_deploy.sh");
     });
 }
 
 function handleDeploy(body){
     // Run the script that merges to production
-    exec("deploy.sh", {}, function(err, stdout, stderr){
+    exec("./deploy.sh", {}, function(err, stdout, stderr){
         console.log("Finished deploying to prod-like envs. Celebrate");
     });
 }
 
 function handleQuickDeploy(req, res){
     console.log("Executing Quick Deploy thingie");
-    exec("quick_test.sh", {}, function(err, stdout, stderr){
+    exec("./quick_test.sh", { "GITHUB_CREDENTIALS":args['gh-token'] }, 
+    function(err, stdout, stderr){
         console.log("Finished running quick_deploy.sh");
     });
     res.writeHead(200, { 'Content-Type': 'text/plain' });
