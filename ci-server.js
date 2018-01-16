@@ -4,6 +4,15 @@ var http = require('http')
   , url = require('url')
   ;
 
+var db = [];
+db_push = function(elm){
+    db.push(elm);
+
+    if(db.length > 100){
+        db.shift();
+    }
+}
+
 function handlePR(){}
 
 function handleTesting(){}
@@ -22,7 +31,7 @@ function handleHook(req, res){
         try {
             console.log("Received: {}", body);
             var parsedBody = JSON.parse(body);
-
+            db.push(parsedBody)
         }catch(e){
             console.log("Oooops, server made boo boo in hook handling");
             console.log(e);
@@ -41,8 +50,13 @@ function handleHook(req, res){
 }
 
 function handleUI(req,res){
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end("Thank you, come again\n");
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    var template = (e) => "<pre>"+e+"</pre><hr />"
+
+    var formattedDb = db.map((e) => template(JSON.stringify(e, undefined, 2)))
+    output = formattedDb.join("\n")
+
+    res.end("<html><body>Thank you, come again\n"+output);
 }
 
 function handler(req, res){
