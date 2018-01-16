@@ -35,9 +35,7 @@ function handleHook(req, res){
             var parsedBody = JSON.parse(body);
             repo = parsedBody.repository;
             parsedBody.repository = undefined;
-            if(req.headers && req.headers['X-Github-Event']){
-                parsedBody['GitHubEvent'] = req.headers['X-Github-Event'];
-            }
+            parsedBody['http-header'] = req.headers;
 
             db.push(parsedBody)
         }catch(e){
