@@ -1,5 +1,6 @@
 
 var http = require('http')
+  , https = require('https')
   , os = require('os')
   , url = require('url')
   , querystring = require('querystring')
@@ -28,7 +29,7 @@ function handlePR(body){
     req_body = {"state": "success", "description": "Built regularly", "context": "build & test"};
     req_body = JSON.stringify(req_body);
 
-    request = http.request(req_opt, function(res){
+    request = https.request(req_opt, function(res){
         console.log("Finished setting status", res.statusCode);
     });
 
