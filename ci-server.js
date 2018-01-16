@@ -17,24 +17,31 @@ db_push = function(elm){
     }
 }
 
+function mkRequest(req_url, method, auth, body, cb){
+    var req_opt = url.parse(req_url);
+    // Auth info
+    req_opt.auth = auth;
+    // HTTP Method
+    req_opt.method = method;
+
+    request = https.request(req_opt, cb);
+
+    request.write(body);
+    request.end();
+
+}
+
 function handlePR(body){
     // AKA Set status to green
     var status_url = body.pull_request.statuses_url;
-    var req_opt = url.parse(status_url);
-    // Auth info
-    req_opt.auth = args["gh-token"]
-    // HTTP Method
-    req_opt.method = "POST"
 
     req_body = {"state": "success", "description": "Built regularly", "context": "build & test"};
     req_body = JSON.stringify(req_body);
-
-    request = https.request(req_opt, function(res){
+    mkRequest(status_url, "POST", args["gh-token"], req_body, function(){
         console.log("Finished setting status", res.statusCode);
+        res.on('data', (d) => process.stdout.write(d));
+        res.on('end', () => console.log("===== End Of Request ====="));
     });
-
-    request.write(req_body);
-    request.end();
 }
 
 function handleTesting(){}
