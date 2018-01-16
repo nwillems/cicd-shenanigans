@@ -2,6 +2,8 @@
 var http = require('http')
   , os = require('os')
   , url = require('url')
+  , querystring = require('querystring')
+  , process = require('process')
   ;
 
 var repo = {}
@@ -14,13 +16,41 @@ db_push = function(elm){
     }
 }
 
-function handlePR(){}
+function handlePR(body){
+    // AKA Set status to green
+    var status_url = body.pull_request.statuses_url;
+    var req_opt = url.parse(status_url);
+    // Auth info
+    req_opt.auth = args["gh-token"]
+    // HTTP Method
+    req_opt.method = "POST"
+
+    req_body = {"state": "success", "description": "Built regularly", "context": "build & test"};
+    req_body = JSON.stringify(req_body);
+
+    request = http.request(req_opt, function(res){
+        console.log("Finished setting status", res.statusCode);
+    });
+
+    request.write(req_body);
+    request.end();
+}
 
 function handleTesting(){}
 
 function handleDeploy(){}
 
-function handleQuickDeploy(){}
+function handleQuickDeploy(req, res){
+    console.log("Executing Quick Deploy thingie");
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end("All righty partner, this is gonna be a bumpy ride")
+}
+
+function routeHook(body){
+    if ( body['http-header']['x-github-event'] == "pull_request" ){
+        handlePR(body);
+    }
+}
 
 function handleHook(req, res){
     if(req.method == "POST") {
@@ -37,7 +67,9 @@ function handleHook(req, res){
             parsedBody.repository = undefined;
             parsedBody['http-header'] = req.headers;
 
-            db.push(parsedBody)
+            db.push(parsedBody);
+
+            routeHook(parsedBody);
         }catch(e){
             console.log("Oooops, server made boo boo in hook handling");
             console.log(e);
@@ -69,11 +101,26 @@ function handler(req, res){
     var path = url.parse(req.url).pathname;
     if ( path == "/hook") { 
         return handleHook(req, res);
+    } else if ( path == "/quickie") {
+        return handleQuickDeploy(req, res);
     }
     return handleUI(req, res);
 }
+var args = {
+    "gh-token": ""
+}
+
+try {
+    var args = querystring.parse(process.argv[2]);
+}catch(e){
+    console.log("Malformed arguments, should be a querystring", e);
+}
+
+if( ! args["gh-token"] ){ console.log("github token is required, specify gh-token=..."); process.exit(1);}
 
 var server = http.createServer(handler);
+
+console.log("Running with args:", args);
 
 server.listen(9001, function(){
     console.log("CI Server ready")
