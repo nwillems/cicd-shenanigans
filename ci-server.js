@@ -23,7 +23,6 @@ function exec(script, env, cb){
 
     return child_process.exec(
         script, 
-        [], // args
         {"env": env, "shell": "/bin/bash"}, //opts
         cb
     );
