@@ -24,7 +24,7 @@ function mkRequest(req_url, method, auth, body, cb){
     // HTTP Method
     req_opt.method = method;
     // User-agent
-    req_opt.headers["user-agent"] = "Homegrown CI";
+    req_opt.headers = { "user-agent": "Homegrown CI" };
 
     request = https.request(req_opt, cb);
 
