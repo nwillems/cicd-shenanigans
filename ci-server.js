@@ -5,6 +5,7 @@ var http = require('http')
   , url = require('url')
   , querystring = require('querystring')
   , process = require('process')
+  , child_process = require('child_process')
   ;
 
 var repo = {}
@@ -15,6 +16,12 @@ db_push = function(elm){
     if(db.length > 100){
         db.shift();
     }
+}
+
+function exec(script, env, cb){
+    if (!cb) { cb = env; }
+
+    return child_process.execFile(script, [], {"env": env}, cb);
 }
 
 function mkRequest(req_url, method, auth, body, cb){
@@ -46,19 +53,40 @@ function handlePR(body){
     });
 }
 
-function handleTesting(){}
+function handleTesting(body){
+    // Probably do something about the input from github
+    exec("slow_test.sh", {}, function(err, stdout, stderr){
+        console.log("Finished running slow_deploy.sh");
+    });
+}
 
-function handleDeploy(){}
+function handleDeploy(body){
+    // Run the script that merges to production
+    exec("deploy.sh", {}, function(err, stdout, stderr){
+        console.log("Finished deploying to prod-like envs. Celebrate");
+    });
+}
 
 function handleQuickDeploy(req, res){
     console.log("Executing Quick Deploy thingie");
+    exec("quick_test.sh", {}, function(err, stdout, stderr){
+        console.log("Finished running quick_deploy.sh");
+    });
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end("All righty partner, this is gonna be a bumpy ride")
 }
 
 function routeHook(body){
-    if ( body['http-header']['x-github-event'] == "pull_request" ){
+    if ( body['http-header']['x-github-event'] == "pull_request" &&
+         (body.action == "opened" || body.action == "synchronize") ){
         handlePR(body);
+    } else if ( body['http-header']['x-github-event'] == "push") {
+        // Consider switch case
+        if ( body.ref == "refs/heads/testing" ) {
+            handleTesting(body)
+        } else if ( body.ref == "refs/head/master" ) {
+            handleDeploy(body)
+        }
     }
 }
 
@@ -122,7 +150,10 @@ try {
     console.log("Malformed arguments, should be a querystring", e);
 }
 
-if( ! args["gh-token"] ){ console.log("github token is required, specify gh-token=..."); process.exit(1);}
+if( ! args["gh-token"] ){ 
+    console.log("github token is required, specify gh-token=..."); 
+    process.exit(1);
+}
 
 var server = http.createServer(handler);
 
