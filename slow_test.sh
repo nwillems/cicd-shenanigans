@@ -19,3 +19,6 @@ git merge --log -m "Merge slow-tested changes from testing" --no-ff \
 
 # Replace origin/testing below, with the currently tested hash
 # git merge --no-ff origin/testing
+
+git push origin master
+
