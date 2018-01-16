@@ -37,7 +37,7 @@ function handlePR(body){
 
     req_body = {"state": "success", "description": "Built regularly", "context": "build & test"};
     req_body = JSON.stringify(req_body);
-    mkRequest(status_url, "POST", args["gh-token"], req_body, function(){
+    mkRequest(status_url, "POST", args["gh-token"], req_body, function(res){
         console.log("Finished setting status", res.statusCode);
         res.on('data', (d) => process.stdout.write(d));
         res.on('end', () => console.log("===== End Of Request ====="));
