@@ -4,6 +4,7 @@ var http = require('http')
   , url = require('url')
   ;
 
+var repo = {}
 var db = [];
 db_push = function(elm){
     db.push(elm);
@@ -30,7 +31,12 @@ function handleHook(req, res){
         var body = Buffer.concat(rawBody).toString();
         try {
             console.log("Received: {}", body);
+            
             var parsedBody = JSON.parse(body);
+            repo = parsedBody.repository;
+            parsedBody.repository = undefined;
+            parsedBody['GitHubEvent'] = req.header['X-Github-Event'];
+
             db.push(parsedBody)
         }catch(e){
             console.log("Oooops, server made boo boo in hook handling");
