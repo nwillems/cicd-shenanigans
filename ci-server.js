@@ -60,7 +60,7 @@ function handlePR(body){
 function handleTesting(body){
     // Probably do something about the input from github
     exec("./slow_test.sh", {}, function(err, stdout, stderr){
-        console.log("Finished running slow_test.sh. OUTPUT: ", stdout);
+        console.log("Finished running slow_test.sh. OUTPUT: ", stdout, "stderr:", stderr);
     });
 }
 
@@ -75,7 +75,7 @@ function handleQuickDeploy(req, res){
     console.log("Executing Quick Deploy thingie");
     exec("./quick_test.sh", { "GITHUB_CREDENTIALS":args['gh-token'] }, 
     function(err, stdout, stderr){
-        console.log("Finished running quick_test.sh. OUTPUT: ", stdout);
+        console.log("Finished running quick_test.sh. OUTPUT: ", stdout, "stderr", stderr);
     });
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end("All righty partner, this is gonna be a bumpy ride")
