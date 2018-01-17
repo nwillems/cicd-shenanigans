@@ -19,7 +19,7 @@ git checkout -b ${TEMP_BRANCH} origin/master
 
 echo "Make updates to the thing we are quickly testing"
 echo "AA" >> quick.txt
-git commit --author "ci-server@nwillems.dk" -m"Quickly tested" quick.txt
+git commit --author "CI <ci-server@nwillems.dk>" -m"Quickly tested" quick.txt
 
 # Ensure status
 echo "Ensuring commit is available and status is set"
