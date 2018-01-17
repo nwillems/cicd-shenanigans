@@ -1,5 +1,7 @@
 #!/bin/bash
 
+env
+
 git config user.email "ciserver@nwillems.dk"
 git config user.name "CI Server"
 
@@ -25,7 +27,7 @@ git push origin ${TEMP_BRANCH}
 commit_status='{"state": "success", "description": "Built from quick-test job", "context": "build & test"}'
 commit_hash=`git rev-parse --verify HEAD`
 curl -s https://api.github.com/repos/nwillems/cicd-shenanigans/statuses/${commit_hash} \
-    -u $GITHUB_CREDENTIALS \
+    -u "$GITHUB_CREDENTIALS" \
     -X POST \
     -d "$commit_status"
 
