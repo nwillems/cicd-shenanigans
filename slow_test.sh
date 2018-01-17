@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 echo "Take your time. Updating to latest and updating test-staging area"
 git fetch origin
