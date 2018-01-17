@@ -1,5 +1,8 @@
 #!/bin/bash -x
 
+git config user.email "ciserver@nwillems.dk"
+git config user.name "CI Server"
+
 echo "Take your time. Updating to latest and updating test-staging area"
 git fetch origin
 git checkout stag

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+git config user.email "ciserver@nwillems.dk"
+git config user.name "CI Server"
+
 echo "Faster faster. Ensuring base branch is up to date..."
 git fetch origin
 git checkout master
