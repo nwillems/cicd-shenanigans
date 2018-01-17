@@ -19,11 +19,13 @@ db_push = function(elm){
 }
 
 function exec(script, env, cb){
-    if (!cb) { cb = env; }
+    if (!cb) { cb = env; env = {}; }
+
+    var penv = Object.assign({}, process.env, env);
 
     return child_process.exec(
         script, 
-        {"env": env, "shell": "/bin/bash"}, //opts
+        {"env": penv, "shell": "/bin/bash"}, //opts
         cb
     );
 }
@@ -146,7 +148,7 @@ function handler(req, res){
     return handleUI(req, res);
 }
 var args = {
-    "gh-token": ""
+    "gh-token": "",
 }
 
 try {
