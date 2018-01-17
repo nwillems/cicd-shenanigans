@@ -11,7 +11,7 @@ git checkout master
 # Rebase or merge? No changes should exist on master
 git rebase origin/master 
 
-sleep 5
+sleep 35
 
 echo "Creating temporary branch for changes"
 TEMP_BRANCH="quickie-`uuidgen`"

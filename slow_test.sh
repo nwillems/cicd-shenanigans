@@ -10,7 +10,7 @@ git merge --ff-only origin/testing
 git push origin stag
 
 # Run the tests - wow much speedup!!!
-sleep 10
+sleep 70
 
 git fetch origin
 
