@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -x
 
 git config user.email "ciserver@nwillems.dk"
 git config user.name "CI Server"
