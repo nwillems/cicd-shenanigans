@@ -24,6 +24,8 @@ git commit --author "CI <ci-server@nwillems.dk>" -m"Quickly tested" quick.txt
 # Ensure status
 echo "Ensuring commit is available and status is set"
 git push origin ${TEMP_BRANCH}
+sleep 4
+
 commit_status='{"state": "success", "description": "Built from quick-test job", "context": "build & test"}'
 commit_hash=`git rev-parse --verify HEAD`
 url="https://api.github.com/repos/nwillems/cicd-shenanigans/statuses/${commit_hash}"
