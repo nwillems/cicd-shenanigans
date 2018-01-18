@@ -149,10 +149,11 @@ function handler(req, res){
 }
 var args = {
     "gh-token": "",
+    "port": 9001,
 }
 
 try {
-    var args = querystring.parse(process.argv[2]);
+    var args = Object.assign(args, querystring.parse(process.argv[2]));
 }catch(e){
     console.log("Malformed arguments, should be a querystring", e);
 }
@@ -161,11 +162,16 @@ if( ! args["gh-token"] ){
     console.log("github token is required, specify gh-token=..."); 
     process.exit(1);
 }
+if( typeof args["port"] !== "string" ){
+    console.log("No port specified, using default: ", args["port"])
+} else {
+    args["port"] = parseInt(args["port"], 10)
+}
 
 var server = http.createServer(handler);
 
 console.log("Running with args:", args);
 
-server.listen(9001, function(){
+server.listen(args["port"], function(){
     console.log("CI Server ready")
 })
