@@ -33,7 +33,7 @@ url="https://api.github.com/repos/nwillems/cicd-shenanigans/statuses/${commit_ha
 echo "Updating status: ${url}"
 
 curl -s ${url} \
-    -u "'${GITHUB_CREDENTIALS}:'" \
+    -u "${GITHUB_CREDENTIALS}:" \
     -X POST -H 'Content-Type: application/json' \
     -d "$commit_status"
 
