@@ -15,7 +15,8 @@ sleep 35
 
 echo "Creating temporary branch for changes"
 TEMP_BRANCH="quickie-`uuidgen`"
-git checkout -b ${TEMP_BRANCH} origin/master
+git branch ${TEMP_BRANCH} master
+git checkout ${TEMP_BRANCH}
 
 echo "Make updates to the thing we are quickly testing"
 echo "AA" >> quick.txt
@@ -23,7 +24,7 @@ git commit --author "CI <ci-server@nwillems.dk>" -m"Quickly tested" quick.txt
 
 # Ensure status
 echo "Ensuring commit is available and status is set"
-git push origin ${TEMP_BRANCH}
+git push --set-upstream origin ${TEMP_BRANCH}
 sleep 4
 
 commit_status='{"state": "success", "description": "Built from quick-test job", "context": "build & test"}'
