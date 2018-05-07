@@ -10,6 +10,7 @@ When running helm, remember init - run through the quick start
 installing brigade - fairly easy
 - helm install -n brigade-server brigade/brigade --set api.service.type=NodePort
 - remember those pesky (cluster)rolebindings
+  https://medium.com/@lestrrat/configuring-rbac-for-your-kubernetes-service-accounts-c348b64eb242
 - Using ngrok to have incomming requests from github
 - Usefull command: minikube service list
 
