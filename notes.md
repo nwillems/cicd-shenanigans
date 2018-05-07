@@ -16,9 +16,10 @@ installing brigade - fairly easy
 
 kashti - super easy, just worked(almost, well needed the api server to be
 actually working)...
+helm install -n kashti ./charts/kashti --set service.type=NodePort --set brigade.apiServer=http://192.168.64.7:32272
 
-setting up project - kinda cool using helm for it, but also extremely limiting.
-
+Setting up project - kinda cool using helm for it, but also extremely limiting.
+helm install brigade/brigade-project --name cicd-shenanigans -f cicd-shenanigans.yaml
 
 urefenes:
  - helm install of new project, with proper credentials stored "centrally"
