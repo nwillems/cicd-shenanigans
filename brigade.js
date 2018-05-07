@@ -12,7 +12,7 @@ events.on("push", function(e, project) {
   var job2 = new Job("do-little-more", "alpine:3.4")
   job2.tasks = [
     "ls && pwd",
-    "cat notes.md"
+    "cat src/notes.md"
   ]
 
   job.run()
