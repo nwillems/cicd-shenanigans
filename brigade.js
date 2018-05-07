@@ -1,7 +1,14 @@
 const { events } = require("brigadier");
 
 events.on("push", function(e, project) {
-  console.log("WHAT UP!!?!??!?!?!?");
-  console.log("Received push:");
   console.log(e);
+
+  var job = new Job("do-all", "alpine:3.4")
+
+  job.tasks = [
+    "echo Hello",
+    "echo World"
+  ]
+
+  job.run()
 })
