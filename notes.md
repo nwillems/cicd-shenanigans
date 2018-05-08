@@ -27,3 +27,50 @@ urefenes:
    Maybe one could intercept something.
  - This https://github.com/Azure/brigade/blob/master/docs/topics/scripting.md
    hints at running builds locally, could be very usefull.
+ - brigade-project has a defaultScript option, which could be used to supply a
+   script that reads the yaml file instead of the brigade.js file.
+
+Suggested workflow:
+ - Scan through GH organisation for projects
+ - All projects containing the build.yaml file are picked up
+ - build.yaml is verified and the repo is added as a project
+ - on('push') if edited files contains build.yaml add project
+
+ - In project:
+   - on 'push' parse build.yaml and specify tasks
+     CONSIDER: Should we try this in pure JS or have another 'sidecar' for
+       build-parsing. PROBLEM: Get output from container.
+     Not a problem - can do output from container - just use go-container to
+     parse and then return JSON.
+Example default script:
+```
+events.on('push', function(e,p){
+    build_init = new Job("build_parser", "urefenes:release")
+    build_init.run().then(build_config => {
+        jobs = register_buildsteps(e,p,build_config)
+        Group.runEach(jobs).then(() => {
+            // maybe register something on github
+        });
+    })
+});
+
+function register_buildsteps(event, project, build_config){
+    // Find services
+    build_config.servcies;
+    // Find cloner?
+
+    jobs = []
+    for(step in pipeline){
+        step_task = makeJobFromStep(step, pipeline[step])
+        jobs.append(step_task)
+    }
+
+    return jobs;
+}
+```
+
+
+Overall problems
+ - kashti is sluggish. We will need to improve on the interface.
+ - Error reporting in brigade is sub-optimal(Maybe has to do with kashti).
+
